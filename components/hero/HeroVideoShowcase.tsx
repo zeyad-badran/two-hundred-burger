@@ -7,8 +7,14 @@ import Image from 'next/image';
 export default function HeroVideoShowcase() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
+    // Check if the user is on a desktop device
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
 
@@ -17,7 +23,10 @@ export default function HeroVideoShowcase() {
     };
 
     mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    return () => {
+      window.removeEventListener('resize', checkDesktop);
+      mediaQuery.removeEventListener('change', handleChange);
+    };
   }, []);
 
   const floatingIdle = {
@@ -44,7 +53,7 @@ export default function HeroVideoShowcase() {
       >
         <motion.div animate={animationVariants} className="relative w-full h-full">
           
-          {(prefersReducedMotion || videoFailed) ? (
+          {(!isDesktop || prefersReducedMotion || videoFailed) ? (
             <Image
               src="/images/hero/hero-burger-poster.webp"
               alt="Premium Burger Combo"
@@ -70,13 +79,6 @@ export default function HeroVideoShowcase() {
               onError={() => setVideoFailed(true)}
             >
               <source src="/videos/PixVerse_V6_Image_Text_720P_Use_the_attached_p.mp4" type="video/mp4" onError={() => setVideoFailed(true)} />
-              {/* Fallback for browsers that don't support video */}
-              <Image
-                src="/images/hero/hero-burger-poster.webp"
-                alt="Premium Burger Combo"
-                fill
-                className="object-cover"
-              />
             </video>
           )}
 
