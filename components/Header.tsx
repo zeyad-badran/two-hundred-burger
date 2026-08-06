@@ -50,6 +50,15 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+
   return (
     <>
       {isDemo && (
@@ -134,9 +143,11 @@ export default function Header() {
           </button>
         </div>
       </div>
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      </header>
 
       {open && (
-        <div className={`md:hidden fixed inset-0 z-40 bg-char/95 backdrop-blur-md pt-28 px-8 pb-6 flex flex-col overflow-y-auto ${isDemo ? 'top-[28px]' : ''}`}>
+        <div className={`md:hidden fixed inset-0 z-40 bg-char/98 backdrop-blur-xl pt-28 px-8 pb-6 flex flex-col overflow-y-auto transition-all ${isDemo ? 'top-[28px]' : ''}`}>
           <nav className="flex flex-col gap-8 text-3xl font-display mb-12">
             <a href={locale === 'ar' ? '/ar#top' : '/#top'} onClick={() => setOpen(false)} className="text-cream hover:text-sear transition-colors">
               {locale === 'en' ? 'Home' : 'الرئيسية'}
@@ -182,8 +193,6 @@ export default function Header() {
         </div>
       )}
 
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      </header>
       <CartAddedToast onOpenCart={() => setIsCartOpen(true)} />
     </>
   );
