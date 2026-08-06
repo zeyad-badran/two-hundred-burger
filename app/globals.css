@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-char text-cream font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+
+  /* Visible keyboard focus states — accessibility floor */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid theme('colors.sear.DEFAULT');
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: theme('colors.ember.DEFAULT');
+    color: theme('colors.cream.DEFAULT');
+  }
+}
+
+@layer components {
+  /* Eyebrow label — small ticket-style tag used above section headlines */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-ticket text-xs uppercase tracking-[0.25em] text-sear;
+  }
+
+  /* Order-ticket card: perforated top edge referencing an open-kitchen order slip */
+  .ticket-card {
+    position: relative;
+    @apply bg-char-surface border border-char-line rounded-lg;
+  }
+
+  .ticket-card::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background-image: radial-gradient(circle at 10px 0, transparent 6px, theme('colors.char.DEFAULT') 6.5px);
+    background-size: 20px 8px;
+    background-repeat: repeat-x;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Respect reduced-motion preference across the whole site */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
